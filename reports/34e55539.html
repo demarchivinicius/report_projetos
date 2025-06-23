@@ -43,13 +43,11 @@
     .previsto{background:var(--previsto);color:#000}
     .atraso{background:var(--atraso)}
     .footer{font-size:.75rem;margin-top:8px;color:var(--cinza);border-top:1px solid var(--cinza-claro);padding-top:6px;text-align:right}
-    .progress-bar{height:8px;width:100%;border-radius:6px;background:var(--cinza-claro);overflow:hidden;margin-top:6px}
-    .progress-fill{height:100%;background:var(--azul);transition:width 0.4s ease-in-out}
   </style>
 </head>
 <body>
   <header>
-    <h1>STATUS REPORT – PROJETOS (<%= dataHoje %>)</h1>
+    <h1>STATUS REPORT – PROJETOS (23/06/2025)</h1>
     <p>Painel de acompanhamento de status, equipes e progresso</p>
   </header>
 
@@ -75,26 +73,14 @@
 
 <script>
   const grid=document.getElementById('grid');
-  const projetos=<%- JSON.stringify(data) %>;
+  const projetos=[{"title":"Teste","id":"458697","date":"2026-08-20","team":"Desenvolvimento WEB","dev":"Angelo Demarchi","stage":"","beneficiary":"Comercial","status":"Previsto","priority":"5"}];
   let filtroStatus='all';
-
-  function calcProgresso(dataEntrega){
-    const hoje=new Date();
-    const fim=new Date(dataEntrega);
-    const inicio=new Date();
-    inicio.setMonth(inicio.getMonth()-1);
-    const total=fim-inicio;
-    const decorrido=hoje-inicio;
-    let p=Math.min(100,Math.max(0,(decorrido/total)*100));
-    return isNaN(p)?0:Math.round(p);
-  }
 
   function card(p){
     const div=document.createElement('div');
     div.className='card';
     div.dataset.status=p.status;
     const cor=p.status==='Entregue'?'entregue':p.status==='Previsto'?'previsto':'atraso';
-    const progresso=calcProgresso(p.date);
     div.innerHTML=`
       <div class="card-header">
         <h2>${p.title||'-'}</h2>
@@ -109,8 +95,6 @@
         ${p.stage?`<div class="info"><strong>Etapa Atualizada:</strong> ${p.stage}</div>`:''}
         <div class="info"><strong>Parte Favorecida:</strong> ${p.beneficiary||'-'}</div>
         <div class="info"><strong>Status:</strong> <span class="badge ${cor}">${p.status}</span></div>
-        <div class="info"><strong>Progresso:</strong> ${progresso}%</div>
-        <div class="progress-bar"><div class="progress-fill" style="width:${progresso}%"></div></div>
       </div>
       <div class="footer">Status Atual: ${p.status}</div>`;
     return div;

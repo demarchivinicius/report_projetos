@@ -29,27 +29,25 @@
       padding:10px 14px;border:none;border-radius:8px;background:#fff;color:#1f2937;font-weight:500;cursor:pointer;transition:all 0.2s;font-size:0.9rem;border:1px solid var(--cinza-claro)}
     .filters button:hover, .filters select:hover, .filters input[type="date"]:hover{background:#f0f0f0;border-color:#ccc}
 
-    .project-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:20px;padding:20px;max-width:1400px;margin:auto}
-    .card{background:var(--card);padding:20px 24px;border-radius:16px;box-shadow:0 6px 18px rgba(0,0,0,0.06);border-left:6px solid var(--entregue);transition:transform 0.2s;display:flex;flex-direction:column;gap:8px}
-    .card:hover{transform:translateY(-4px)}
+    .project-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:20px;padding:20px;max-width:1400px;margin:auto}
+    .card{background:var(--card);padding:20px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.05);border-left:6px solid var(--entregue);display:flex;flex-direction:column;justify-content:space-between;transition:transform 0.2s}
+    .card:hover{transform:scale(1.015)}
     .card[data-status="Previsto"]{border-left-color:var(--previsto)}
     .card[data-status="Em Atraso"]{border-left-color:var(--atraso)}
-    .card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
-    .card-header h2{font-size:1.1rem;margin:0;color:#111827;font-weight:600}
-    .tag-priority{font-size:.7rem;padding:5px 10px;background:var(--cinza-bg);border-radius:999px;color:var(--cinza);font-weight:600}
-    .card-body .info{margin:2px 0;font-size:.92rem;color:#374151}
-    .badge{display:inline-block;padding:6px 12px;border-radius:8px;font-weight:600;font-size:.75rem;color:#fff;text-transform:uppercase}
+    .card h2{margin:0 0 10px;font-size:1.2rem;font-weight:600;color:#111827}
+    .meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+    .prioridade{font-size:.75rem;background:var(--cinza-bg);padding:4px 10px;border-radius:16px;color:var(--cinza);font-weight:500}
+    .info{margin:3px 0;font-size:.95rem;color:#374151}
+    .badge{display:inline-block;padding:6px 12px;border-radius:8px;font-weight:600;font-size:.85rem;color:#fff;text-transform:uppercase}
     .entregue{background:var(--entregue)}
     .previsto{background:var(--previsto);color:#000}
     .atraso{background:var(--atraso)}
-    .footer{font-size:.75rem;margin-top:8px;color:var(--cinza);border-top:1px solid var(--cinza-claro);padding-top:6px;text-align:right}
-    .progress-bar{height:8px;width:100%;border-radius:6px;background:var(--cinza-claro);overflow:hidden;margin-top:6px}
-    .progress-fill{height:100%;background:var(--azul);transition:width 0.4s ease-in-out}
+    .footer{font-size:.8rem;margin-top:14px;color:var(--cinza);border-top:1px solid var(--cinza-claro);padding-top:6px;text-align:right}
   </style>
 </head>
 <body>
   <header>
-    <h1>STATUS REPORT – PROJETOS (<%= dataHoje %>)</h1>
+    <h1>STATUS REPORT – PROJETOS (23/06/2025)</h1>
     <p>Painel de acompanhamento de status, equipes e progresso</p>
   </header>
 
@@ -63,9 +61,6 @@
     </select>
     <select id="filtroScrum" onchange="filtrarAvancado()">
       <option value="">Todos Scrum Masters</option>
-      <option value="Suellen Huller">Suellen Huller</option>
-      <option value="Matheus Pitz">Matheus Pitz</option>
-      <option value="Vinicius Vivian">Vinicius Vivian</option>
     </select>
     <input type="date" id="filtroInicio" onchange="filtrarAvancado()">
     <input type="date" id="filtroFim" onchange="filtrarAvancado()">
@@ -75,43 +70,27 @@
 
 <script>
   const grid=document.getElementById('grid');
-  const projetos=<%- JSON.stringify(data) %>;
+  const projetos=[{"title":"Teste","id":"59875","date":"2026-06-29","team":"Desenvolvimento WEB","dev":"Angelo Demarchi","stage":"","beneficiary":"Comercial","status":"Previsto","priority":"5"}];
   let filtroStatus='all';
-
-  function calcProgresso(dataEntrega){
-    const hoje=new Date();
-    const fim=new Date(dataEntrega);
-    const inicio=new Date();
-    inicio.setMonth(inicio.getMonth()-1);
-    const total=fim-inicio;
-    const decorrido=hoje-inicio;
-    let p=Math.min(100,Math.max(0,(decorrido/total)*100));
-    return isNaN(p)?0:Math.round(p);
-  }
 
   function card(p){
     const div=document.createElement('div');
     div.className='card';
     div.dataset.status=p.status;
     const cor=p.status==='Entregue'?'entregue':p.status==='Previsto'?'previsto':'atraso';
-    const progresso=calcProgresso(p.date);
     div.innerHTML=`
-      <div class="card-header">
+      <div class="meta">
         <h2>${p.title||'-'}</h2>
-        <span class="tag-priority">#PRIORIDADE ${p.priority||'-'}</span>
+        <span class="prioridade">#PRIORIDADE ${p.priority||'-'}</span>
       </div>
-      <div class="card-body">
-        <div class="info"><strong>ID:</strong> ${p.id||'-'}</div>
-        <div class="info"><strong>Data de Entrega:</strong> ${p.date||'-'}</div>
-        <div class="info"><strong>Equipe/Time:</strong> ${p.team||'-'}</div>
-        ${p.scrum?`<div class="info"><strong>Scrum Master:</strong> ${p.scrum}</div>`:''}
-        ${p.dev?`<div class="info"><strong>Desenvolvedor(a):</strong> ${p.dev}</div>`:''}
-        ${p.stage?`<div class="info"><strong>Etapa Atualizada:</strong> ${p.stage}</div>`:''}
-        <div class="info"><strong>Parte Favorecida:</strong> ${p.beneficiary||'-'}</div>
-        <div class="info"><strong>Status:</strong> <span class="badge ${cor}">${p.status}</span></div>
-        <div class="info"><strong>Progresso:</strong> ${progresso}%</div>
-        <div class="progress-bar"><div class="progress-fill" style="width:${progresso}%"></div></div>
-      </div>
+      <div class="info"><strong>ID:</strong> ${p.id||'-'}</div>
+      <div class="info"><strong>Data de Entrega:</strong> ${p.date||'-'}</div>
+      <div class="info"><strong>Equipe/Time:</strong> ${p.team||'-'}</div>
+      ${p.scrum?`<div class="info"><strong>Scrum Master:</strong> ${p.scrum}</div>`:''}
+      ${p.dev?`<div class="info"><strong>Desenvolvedor(a):</strong> ${p.dev}</div>`:''}
+      ${p.stage?`<div class="info"><strong>Etapa Atualizada:</strong> ${p.stage}</div>`:''}
+      <div class="info"><strong>Parte Favorecida:</strong> ${p.beneficiary||'-'}</div>
+      <div class="info"><strong>Status:</strong> <span class="badge ${cor}">${p.status}</span></div>
       <div class="footer">Status Atual: ${p.status}</div>`;
     return div;
   }
@@ -139,10 +118,16 @@
 
   window.onload=()=>{
     const areas=[...new Set(projetos.map(p=>p.beneficiary).filter(Boolean))];
+    const scrums=[...new Set(projetos.map(p=>p.scrum).filter(Boolean))];
     areas.forEach(a=>{
       const opt=document.createElement('option');
       opt.value=opt.textContent=a;
       document.getElementById('filtroArea').appendChild(opt);
+    });
+    scrums.forEach(s=>{
+      const opt=document.createElement('option');
+      opt.value=opt.textContent=s;
+      document.getElementById('filtroScrum').appendChild(opt);
     });
   }
 

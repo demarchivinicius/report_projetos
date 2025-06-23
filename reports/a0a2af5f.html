@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Status Report – Projetos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Roboto&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --entregue:#10b981;
+      --previsto:#fbbf24;
+      --atraso:#ef4444;
+      --bg:#f9fafb;
+      --text:#111827;
+      --card:#fff;
+      --cinza:#6b7280;
+      --cinza-claro:#e5e7eb;
+      --azul:#3b82f6;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Roboto',sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+    header{background:#bba896;color:#fff;padding:24px 20px;text-align:center;box-shadow:0 2px 4px rgba(0,0,0,0.1)}
+    header h1{font-size:2rem;margin-bottom:4px}
+    header p{font-size:.95rem;color:#f3f4f6}
+
+    .filters{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;background:#f3f4f6;padding:12px 0;margin-bottom:10px}
+    .filters button{padding:8px 14px;border:none;border-radius:8px;background:var(--cinza-claro);color:#111827;font-weight:600;cursor:pointer;transition:all 0.2s}
+    .filters button:hover{background:#d1d5db}
+
+    .project-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(400px,1fr));gap:24px;padding:20px;max-width:1400px;margin:auto}
+    .card{background:var(--card);padding:20px;border-radius:10px;box-shadow:0 2px 6px rgba(0,0,0,0.06);border-left:8px solid var(--entregue);display:flex;flex-direction:column;justify-content:space-between}
+    .card[data-status="Previsto"]{border-left-color:var(--previsto)}
+    .card[data-status="Em Atraso"]{border-left-color:var(--atraso)}
+    .card h2{margin:0 0 12px;font-size:1.2rem;font-weight:600}
+    .meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+    .prioridade{font-size:.75rem;background:var(--cinza-claro);padding:3px 8px;border-radius:4px;color:var(--cinza);font-weight:500}
+    .info{margin:4px 0;font-size:.95rem}
+    .badge{display:inline-block;padding:5px 10px;border-radius:6px;font-weight:600;font-size:.85rem;color:#fff}
+    .entregue{background:var(--entregue)}
+    .previsto{background:var(--previsto);color:#000}
+    .atraso{background:var(--atraso)}
+    .footer{font-size:.8rem;margin-top:12px;color:var(--cinza)}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>STATUS REPORT – PROJETOS (23/06/2025)</h1>
+    <p>Painel de acompanhamento de status, equipes e progresso</p>
+  </header>
+
+  <div class="filters">
+    <button onclick="filtrar('all')">Todos</button>
+    <button onclick="filtrar('Entregue')">Entregues ✅</button>
+    <button onclick="filtrar('Previsto')">Previstos ⏳</button>
+    <button onclick="filtrar('Em Atraso')">Em Atraso ⚠️</button>
+  </div>
+
+  <div id="grid" class="project-grid"></div>
+
+<script>
+  const grid=document.getElementById('grid');
+  const projetos=[{"title":"dfsdfsdf","id":"998989","date":"2026-06-29","team":"fsdfdsf","dev":"fsdf","stage":"sdfsdf","beneficiary":"sdfsdfds","status":"Previsto","priority":"5"}];
+
+  function card(p){
+    const div=document.createElement('div');
+    div.className='card';
+    div.dataset.status=p.status;
+    const cor=p.status==='Entregue'?'entregue':p.status==='Previsto'?'previsto':'atraso';
+    div.innerHTML=`
+      <div class="meta">
+        <h2>${p.title||'-'}</h2>
+        <span class="prioridade">#PRIORIDADE ${p.priority||'-'}</span>
+      </div>
+      <div class="info"><strong>ID:</strong> ${p.id||'-'}</div>
+      <div class="info"><strong>Data de Entrega:</strong> ${p.date||'-'}</div>
+      <div class="info"><strong>Equipe/Time:</strong> ${p.team||'-'}</div>
+      ${p.scrum?`<div class="info"><strong>Scrum Master:</strong> ${p.scrum}</div>`:''}
+      ${p.dev?`<div class="info"><strong>Desenvolvedor(a):</strong> ${p.dev}</div>`:''}
+      ${p.stage?`<div class="info"><strong>Etapa Atualizada:</strong> ${p.stage}</div>`:''}
+      <div class="info"><strong>Parte Favorecida:</strong> ${p.beneficiary||'-'}</div>
+      <div class="info"><strong>Status:</strong> <span class="badge ${cor}">${p.status}</span></div>
+      <div class="footer">Status Atual: ${p.status}</div>`;
+    return div;
+  }
+
+  function render(filtro='all'){
+    grid.innerHTML='';
+    projetos.filter(p=>filtro==='all'||p.status===filtro).forEach(p=>grid.appendChild(card(p)));
+  }
+
+  function filtrar(f){render(f);}  
+
+  render();
+</script>
+</body>
+</html>
