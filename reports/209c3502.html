@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Status Report – Projetos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --entregue: #10b981;
+      --previsto: #fbbf24;
+      --atraso: #ef4444;
+      --background: #f7f7f7;
+      --text: #1f2937;
+      --card-bg: #fff;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: var(--background);
+      color: var(--text);
+    }
+    header {
+      background: #bba896;
+      color: white;
+      padding: 20px;
+      font-size: 1.8rem;
+      text-align: center;
+      font-weight: 600;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+    .filters {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+    .filters button {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background-color: #d6ccc2;
+      font-weight: 600;
+    }
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 20px;
+      padding: 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
+    .card {
+      background: var(--card-bg);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      position: relative;
+      border-left: 8px solid var(--entregue);
+    }
+    .card[data-status="Previsto"] { border-left-color: var(--previsto); }
+    .card[data-status="Em Atraso"] { border-left-color: var(--atraso); }
+    .card h2 {
+      margin: 0 0 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1.2rem;
+    }
+    .prioridade {
+      font-size: 0.85rem;
+      background: #e2e8f0;
+      color: #4b5563;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .info {
+      margin: 6px 0;
+    }
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 6px;
+      color: white;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    .entregue { background: var(--entregue); }
+    .previsto { background: var(--previsto); color: #000; }
+    .atraso { background: var(--atraso); }
+    .footer {
+      font-size: 0.8rem;
+      margin-top: 14px;
+      color: #6b7280;
+    }
+  </style>
+</head>
+<body>
+  <header>STATUS REPORT – PROJETOS (23/06/2025)</header>
+  <div class="filters">
+    <button onclick="filterStatus('all')">Todos</button>
+    <button onclick="filterStatus('Entregue')">Entregues ✅</button>
+    <button onclick="filterStatus('Previsto')">Previstos ⏳</button>
+    <button onclick="filterStatus('Em Atraso')">Em Atraso ⚠️</button>
+  </div>
+  <div class="project-grid" id="projectContainer"></div>
+  <script>
+    const container = document.getElementById('projectContainer');
+    const data = [{"title":"fdfsd","id":"21211","date":"2025-06-16","team":"dfsdfdsf","dev":"fsdfsdf","beneficiary":"dsfsdf","priority":"5"}];
+
+    function createCard(p) {
+      const div = document.createElement('div');
+      div.className = 'card';
+      div.dataset.status = p.status;
+      div.innerHTML = `
+        <h2>${p.title} <span class="prioridade">#PRIORIDADE ${p.priority || '1'}</span></h2>
+        <div class="info"><strong>ID:</strong> ${p.id}</div>
+        <div class="info"><strong>Data de Entrega:</strong> ${p.date}</div>
+        <div class="info"><strong>Equipe/Time:</strong> ${p.team}</div>
+        ${p.dev ? `<div class="info"><strong>Desenvolvedor(a):</strong> ${p.dev}</div>` : ''}
+        <div class="info"><strong>Parte Favorecida:</strong> ${p.beneficiary}</div>
+        <div class="info"><strong>Status:</strong> <span class="badge ${p.status === 'Entregue' ? 'entregue' : p.status === 'Previsto' ? 'previsto' : 'atraso'}">${p.status}</span></div>
+        <div class="footer">Status atualizado</div>
+      `;
+      return div;
+    }
+
+    function renderAll() {
+      container.innerHTML = '';
+      data.forEach(p => container.appendChild(createCard(p)));
+    }
+
+    function filterStatus(status) {
+      const cards = container.querySelectorAll('.card');
+      cards.forEach(card => {
+        card.style.display = (status === 'all' || card.dataset.status === status) ? 'block' : 'none';
+      });
+    }
+
+    renderAll();
+  </script>
+</body>
+</html>

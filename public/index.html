@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Gerador de Report de Projetos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f8f8f8;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    h1 {
+      letter-spacing: 0.5px;
+      font-size: 1.6rem;
+      background-color: #bba896;
+      color: white;
+      padding: 20px;
+      margin: 0;
+      width: 100%;
+      text-align: center;
+    }
+    .container {
+      background: white;
+      margin: 20px;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      width: 90%;
+      max-width: 600px;
+    }
+    input, select, button {
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      width: 100%;
+      padding: 10px;
+      margin: 6px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+    .project-list {
+      margin-top: 20px;
+    }
+    .project-list li {
+      padding: 6px 0;
+      border-bottom: 1px solid #eee;
+    }
+    .submit-btn {
+      transition: 0.3s;
+      background: #1f2937;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Gerador de Report de Projetos</h1>
+  <div class="container">
+    <input id="title" placeholder="Título do Projeto" />
+    <input id="id" placeholder="ID do Projeto" />
+    <input id="date" type="date" />
+    <input id="team" placeholder="Equipe/Time" />
+    <input id="dev" placeholder="Desenvolvedor(a)" />
+    <input id="stage" placeholder="Etapa Atualizada (opcional)" />
+    <input id="beneficiary" placeholder="Parte Favorecida" />
+    <select id="status">
+      <option value="Entregue">Entregue</option>
+      <option value="Previsto" selected>Previsto</option>
+      <option value="Em Atraso">Em Atraso</option>
+      <option>Entregue</option>
+      <option>Previsto</option>
+      <option>Em Atraso</option>
+    </select>
+    <input id="priority" placeholder="Prioridade (1-5)" type="number" min="1" max="5" />
+    <button onclick="addProject()">Adicionar Projeto</button>
+    <ul id="projects" class="project-list"></ul>
+    <button class="submit-btn" onclick="generateReport()">Gerar Página de Report</button>
+  </div>
+  <script>
+    const projects = [];
+
+    function addProject() {
+      const p = {
+        title: title.value,
+        id: id.value,
+        date: date.value,
+        team: team.value,
+        dev: dev.value,
+        stage: stage.value,
+        beneficiary: beneficiary.value,
+        status: status.value || 'Previsto',
+        priority: priority.value
+      };
+      projects.push(p);
+      document.getElementById('projects').innerHTML += `<li>${p.title} (${p.status})</li>`;
+    }
+
+    async function generateReport() {
+      const res = await fetch('/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(projects)
+      });
+      const json = await res.json();
+      window.open(json.url, '_blank');
+    }
+  </script>
+</body>
+</html>
