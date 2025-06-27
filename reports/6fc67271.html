@@ -49,7 +49,7 @@
 </head>
 <body>
   <header>
-    <h1>STATUS REPORT – PROJETOS (<%= dataHoje %>)</h1>
+    <h1>STATUS REPORT – PROJETOS (27/06/2025)</h1>
     <p>Painel de acompanhamento de status, equipes e progresso</p>
   </header>
 
@@ -75,7 +75,7 @@
 
 <script>
   const grid=document.getElementById('grid');
-  const projetos=<%- JSON.stringify(data) %>;
+  const projetos=[{"title":"fdsf","id":"544","date":"2025-07-03","team":"dfdsf","dev":"","stage":"","beneficiary":"","status":"Previsto","priority":""}];
   let filtroStatus='all';
 
   function normalize(str){

@@ -65,16 +65,19 @@
     <input id="id" placeholder="ID do Projeto" />
     <input id="date" type="date" />
     <input id="team" placeholder="Equipe/Time" />
+    <select id="scrum">
+      <option value="">Selecione o Scrum Master</option>
+      <option value="Suellen Huller">Suellen Huller</option>
+      <option value="Matheus Pitz">Matheus Pitz</option>
+      <option value="Vinicius Vivian">Vinicius Vivian</option>
+    </select>
     <input id="dev" placeholder="Desenvolvedor(a)" />
     <input id="stage" placeholder="Etapa Atualizada (opcional)" />
     <input id="beneficiary" placeholder="Parte Favorecida" />
     <select id="status">
       <option value="Entregue">Entregue</option>
-      <option value="Previsto" selected>Previsto</option>
+      <option value="Previsto">Previsto</option>
       <option value="Em Atraso">Em Atraso</option>
-      <option>Entregue</option>
-      <option>Previsto</option>
-      <option>Em Atraso</option>
     </select>
     <input id="priority" placeholder="Prioridade (1-5)" type="number" min="1" max="5" />
     <button onclick="addProject()">Adicionar Projeto</button>
@@ -85,6 +88,7 @@
     const projects = [];
 
     function addProject() {
+      const statusValue = document.getElementById('status').value;
       const p = {
         title: title.value,
         id: id.value,
@@ -93,7 +97,8 @@
         dev: dev.value,
         stage: stage.value,
         beneficiary: beneficiary.value,
-        status: status.value || 'Previsto',
+        scrum: scrum.value,
+        status: statusValue,
         priority: priority.value
       };
       projects.push(p);
